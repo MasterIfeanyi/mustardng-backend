@@ -12,8 +12,10 @@ const PORT = process.env.PORT || 5000;
 
 
 // Middlewares
+app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(morgan('dev'));
+
 
 // Error Middleware
 app.use(errorHandler);

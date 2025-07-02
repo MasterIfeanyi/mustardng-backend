@@ -1,7 +1,4 @@
-const express = require('express');
-const router = express.Router();
 const Budget = require('../models/Budget');
-const { protect } = require('../middleware/authMiddleware');
 
 const createProudct = async (req, res) => {
   const { product, amount, date } = req.body;
