@@ -6,8 +6,6 @@ const corsOptions = require("./config/corsOptions");
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const cors = require('cors');
-const authRoutes = require('./routes/auth');
-const budgetRoutes = require('./routes/budget');
 const { errorHandler } = require('./middleware/errorMiddleware');
 
 require('dotenv').config();

@@ -10,9 +10,7 @@ export const register = async (req, res) => {
 
     // check for duplicate usernames in the db
     const duplicate = await User.findOne({ username }).exec();
-
-    // Conflict
-    if (duplicate) return res.status(409).json({message: `Username already taken`}); 
+    if (duplicate) return res.status(409).json({message: `User already exists`}); 
 
     const { username, gender, email, dateOfBirth, employmentType, password } = req.body;
 
