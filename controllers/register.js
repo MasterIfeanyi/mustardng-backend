@@ -5,11 +5,12 @@ export const register = async (req, res) => {
   try {
 
     if (!username || !password) {
-        return res.status(400).json({ "message": "Username and password are required." });
+      return res.status(400).json({ "message": "Username and password are required." });
     }
 
     // check for duplicate usernames in the db
     const duplicate = await User.findOne({ username }).exec();
+
     // Conflict
     if (duplicate) return res.status(409).json({message: `Username already taken`}); 
 

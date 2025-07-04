@@ -17,5 +17,5 @@ const findUserProducts = async (req, res) => {
 };
 
 module.exports = {
-    createProudct, findUserProducts
+  createProudct, findUserProducts
 }

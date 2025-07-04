@@ -1,6 +1,11 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const morgan = require('morgan');
+const cookieParser = require('cookie-parser');
+const corsOptions = require("./config/corsOptions");
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
+const cors = require('cors');
 const authRoutes = require('./routes/auth');
 const budgetRoutes = require('./routes/budget');
 const { errorHandler } = require('./middleware/errorMiddleware');
@@ -15,7 +20,8 @@ const PORT = process.env.PORT || 5000;
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(morgan('dev'));
-
+app.use(cookieParser());
+app.use(cors(corsOptions));
 
 // Error Middleware
 app.use(errorHandler);
