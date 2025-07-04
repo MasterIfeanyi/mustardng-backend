@@ -9,8 +9,8 @@ const protect = async (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    // req.user = decoded;
-    req.user = await User.findById(decoded.userId);;
+    req.user = decoded;
+    // req.user = await User.findById(decoded.id);
     next();
   } catch (err) {
     return res.status(401).json({ message: 'Token invalid or expired' });
