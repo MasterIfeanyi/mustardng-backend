@@ -1,32 +1,71 @@
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
+const validator = require('validator');
 
 const register = async (req, res) => {
   try {
-
     const { username, gender, email, dateOfBirth, employmentType, password } = req.body;
 
-    if (!username || !password) {
-      return res.status(400).json({ "message": "Username and password are required." });
+    // Input validation
+    if (!username || !password || !email) {
+      return res.status(400).json({ message: "Username, email and password are required." });
     }
 
-    // check for duplicate usernames in the db
-    const duplicate = await User.findOne({ username }).exec();
-    if (duplicate) return res.status(409).json({message: `User already exists`}); 
+    // Validate email format
+    if (!validator.isEmail(email)) {
+      return res.status(400).json({ message: "Invalid email format" });
+    }
 
-    const hash = await bcrypt.hash(password, 10);
+    // Validate password strength
+    if (password.length < 8) {
+      return res.status(400).json({ message: "Password must be at least 8 characters" });
+    }
 
-    const user = await User.create({ username, gender, email, dateOfBirth, employmentType, password: hash });
+    // Check for duplicate username or email
+    const existingUser = await User.findOne({ 
+      $or: [{ username }, { email }] 
+    }).lean().exec();
 
-    const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    if (existingUser) {
+      if (existingUser.username === username) {
+        return res.status(409).json({ message: "Username already exists" });
+      }
+      return res.status(409).json({ message: "Email already exists" });
+    }
 
-    res.status(201).cookie('accessToken', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'strict' }).send({ token });
+    // Hash password with proper salt rounds (10-12 is recommended)
+    const hash = await bcrypt.hash(password, 12);
 
-    // res.status(201).json({ message: `User registered ${user}` });
+    // Create user without exposing sensitive data
+    const user = await User.create({ 
+      username, 
+      gender, 
+      email, 
+      dateOfBirth, 
+      employmentType, 
+      password: hash 
+    });
+
+    // Return sanitized user data without password hash
+    const userResponse = {
+      id: user._id,
+      username: user.username,
+    };
+
+    // DO NOT issue tokens during registration
+    res.status(201).json({ 
+      message: "Registration successful. Please log in.",
+      user: userResponse 
+    });
 
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    console.error('Registration error:', err); // Log for debugging
+    
+    // Generic error message to prevent information leakage
+    res.status(500).json({ 
+      message: "Registration failed due to server error" 
+    });
   }
 };
 
-module.exports = {register}
+module.exports = { register };
