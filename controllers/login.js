@@ -2,7 +2,7 @@ const User = require('../models/User');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-export const login = async (req, res) => {
+const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -16,7 +16,7 @@ export const login = async (req, res) => {
 
     const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-    res.send({ token }).cookie('accessToken', accessToken, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'strict' });
+    res.cookie('accessToken', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'strict' }).send({ token });
 
     // res.json({ token });
 
@@ -24,3 +24,6 @@ export const login = async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 };
+
+
+module.exports = {login}

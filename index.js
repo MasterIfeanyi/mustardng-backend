@@ -3,10 +3,11 @@ const mongoose = require('mongoose');
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 const corsOptions = require("./config/corsOptions");
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
 const cors = require('cors');
 const { errorHandler } = require('./middleware/errorMiddleware');
+const router = require('./router/route');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 
 require('dotenv').config();
 
@@ -21,8 +22,15 @@ app.use(morgan('dev'));
 app.use(cookieParser());
 app.use(cors(corsOptions));
 
+
+
+app.use('/api', router);
+
+
 // Error Middleware
 app.use(errorHandler);
+
+
 
 const startServer = async () => {
   try {
