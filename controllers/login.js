@@ -1,6 +1,5 @@
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
 const { generateRefreshToken, generateAccessToken } = require("../utils/generateJWTS");
 
 const login = async (req, res) => {
@@ -14,7 +13,7 @@ const login = async (req, res) => {
     }
 
     // Access token (short-lived)
-    const accessToken = generateAccessToken(user_.id)
+    const accessToken = generateAccessToken(user._id);
 
     // Refresh token (longer-lived)
     const refreshToken = generateRefreshToken(user._id);
