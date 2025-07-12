@@ -15,4 +15,4 @@ const loginRateLimiter = rateLimit({
 });
 
 
-export default rateLimit
+module.exports = rateLimit

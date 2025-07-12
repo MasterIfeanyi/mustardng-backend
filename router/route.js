@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const {register} = require("../controllers/register")
 const {login} = require("../controllers/login")
+const {logout} = require("../controllers/logout")
 const {createProudct, findUserProducts} = require("../controllers/budget")
 const {protect} = require("../middleware/authMiddleware")
 const rateLimit = require("../utils/rate-limit")
@@ -14,5 +15,6 @@ router.post("/budget", protect, createProudct);
 
 router.get("/budget", protect, findUserProducts);
 
+router.post('/logout', protect, logout)
 
 module.exports = router;
